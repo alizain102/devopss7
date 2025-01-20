@@ -1,0 +1,43 @@
+name: Linting Workflow
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    environment: development
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Validate package.json
+        run: |
+          cat package.json
+          npm install --dry-run 
+
+
+      - name: Install dependencies
+        run: |
+          npm install --save-dev htmlhint stylelint
+          npm install  # This installs other project dependencies from package.json
+
+      
+      - name: Run HTMLHint
+        run: npx htmlhint '**/*.html'
+
+      
+      - name: Run Stylelint
+        run: npx stylelint '**/*.css'
